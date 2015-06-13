@@ -1,0 +1,247 @@
+CREATE TABLE account (
+  did        NUMBER(20,0)  NOT NULL,
+  account_id VARCHAR2(50)  NOT NULL,
+  secure_id  VARCHAR2(50)  NULL,
+  balance    VARCHAR2(100) NULL,
+  last_login VARCHAR2(50)  NULL,
+  cards      VARCHAR2(50)  NULL,
+  aid        NUMBER(20,0)  NULL,
+  login      VARCHAR2(50)  DEFAULT 'First Login' NULL
+)
+  TABLESPACE users
+  STORAGE (
+    NEXT       1024 K
+  )
+/
+
+ALTER TABLE account
+  ADD CONSTRAINT account_pk PRIMARY KEY (
+    did
+  )
+  USING INDEX
+    STORAGE (
+      NEXT       1024 K
+    )
+/
+
+ALTER TABLE account
+  ADD FOREIGN KEY (
+    aid
+  ) REFERENCES account_details (
+    aid
+  )
+/
+
+
+CREATE TABLE account_details (
+  aid       NUMBER(20,0)  NOT NULL,
+  fname     VARCHAR2(50)  NULL,
+  lname     VARCHAR2(50)  NULL,
+  address   VARCHAR2(100) NULL,
+  city      VARCHAR2(50)  NULL,
+  country   VARCHAR2(50)  NULL,
+  dte       VARCHAR2(50)  NULL,
+  mobile    VARCHAR2(50)  NULL,
+  password  VARCHAR2(50)  NULL,
+  secure1   VARCHAR2(50)  NULL,
+  answer1   VARCHAR2(50)  NULL,
+  secure2   VARCHAR2(50)  NULL,
+  answer2   VARCHAR2(50)  NULL,
+  email     VARCHAR2(50)  NULL,
+  user_type VARCHAR2(30)  NULL
+)
+  TABLESPACE users
+  STORAGE (
+    NEXT       1024 K
+  )
+/
+
+ALTER TABLE account_details
+  ADD CONSTRAINT account_details_pk PRIMARY KEY (
+    aid
+  )
+  USING INDEX
+    TABLESPACE users
+    STORAGE (
+      NEXT       1024 K
+    )
+/
+
+ALTER TABLE account_details
+  ADD CONSTRAINT account_details_uk1 UNIQUE (
+    email
+  )
+  USING INDEX
+    TABLESPACE users
+    STORAGE (
+      NEXT       1024 K
+    )
+/
+
+CREATE TABLE cards (
+  cid       NUMBER(30,0) NOT NULL,
+  card_type VARCHAR2(30) NULL,
+  card_no   VARCHAR2(50) NULL,
+  holder    VARCHAR2(30) NULL,
+  expiry    VARCHAR2(30) NULL,
+  cvv       NUMBER(30,0) NULL,
+  did       NUMBER(30,0) NULL,
+  amount    VARCHAR2(20) NULL
+)
+  STORAGE (
+    NEXT       1024 K
+  )
+/
+
+ALTER TABLE cards
+  ADD CONSTRAINT cards_pk PRIMARY KEY (
+    cid
+  )
+  USING INDEX
+    STORAGE (
+      NEXT       1024 K
+    )
+/
+
+ALTER TABLE cards
+  ADD CONSTRAINT cards_fk1 FOREIGN KEY (
+    did
+  ) REFERENCES account (
+    did
+  )
+/
+
+
+CREATE TABLE demo (
+  demo_id     NUMBER(20,0) NOT NULL,
+  bank        VARCHAR2(30) NULL,
+  bank_id     VARCHAR2(50) NULL,
+  debit_no    VARCHAR2(50) NULL,
+  debit_name  VARCHAR2(30) NULL,
+  debit_dte   VARCHAR2(20) NULL,
+  debit_cvv   NUMBER(30,0) NULL,
+  credit_no   VARCHAR2(50) NULL,
+  credit_name VARCHAR2(30) NULL,
+  credit_dte  VARCHAR2(20) NULL,
+  credit_cvv  NUMBER(30,0) NULL,
+  balance     NUMBER(30,0) NULL,
+  did         NUMBER(30,0) NULL
+)
+  STORAGE (
+    NEXT       1024 K
+  )
+/
+
+ALTER TABLE demo
+  ADD CONSTRAINT demo_pk PRIMARY KEY (
+    demo_id
+  )
+  USING INDEX
+    STORAGE (
+      NEXT       1024 K
+    )
+/
+
+ALTER TABLE demo
+  ADD CONSTRAINT demo_fk1 FOREIGN KEY (
+    did
+  ) REFERENCES account (
+    did
+  ) ON DELETE CASCADE
+/
+
+CREATE TABLE history (
+  tid              NUMBER(30,0) NOT NULL,
+  transaction_type VARCHAR2(30) NULL,
+  amount           NUMBER(30,0) NULL,
+  status           VARCHAR2(30) NULL,
+  dte              VARCHAR2(30) NULL,
+  card             NUMBER(30,0) NULL,
+  holder           VARCHAR2(30) NULL,
+  bank             VARCHAR2(30) NULL,
+  expiry           VARCHAR2(30) NULL,
+  cvc              NUMBER(30,0) NULL,
+  aid              NUMBER(30,0) NULL,
+  send_to          VARCHAR2(30) NULL,
+  send_from        VARCHAR2(30) NULL,
+  message          VARCHAR2(50) NULL,
+  "READ"             VARCHAR2(20) NULL
+)
+  STORAGE (
+    NEXT       1024 K
+  )
+/
+
+ALTER TABLE history
+  ADD CONSTRAINT history_pk PRIMARY KEY (
+    tid
+  )
+  USING INDEX
+    STORAGE (
+      NEXT       1024 K
+    )
+/
+
+ALTER TABLE history
+  ADD CONSTRAINT history_fk1 FOREIGN KEY (
+    aid
+  ) REFERENCES account (
+    did
+  )
+/
+
+
+CREATE SEQUENCE account_details_seq
+  MINVALUE 1
+  MAXVALUE 999999999999999999999999999
+  INCREMENT BY 1
+  NOCYCLE
+  NOORDER
+  CACHE 20
+/
+
+CREATE SEQUENCE account_id_seq
+  MINVALUE 50000
+  MAXVALUE 999999999999999999999999999
+  INCREMENT BY 1
+  NOCYCLE
+  NOORDER
+  CACHE 20
+/
+
+
+CREATE SEQUENCE account_seq
+  MINVALUE 1
+  MAXVALUE 999999999999999999999999999
+  INCREMENT BY 1
+  NOCYCLE
+  NOORDER
+  CACHE 20
+/
+
+CREATE SEQUENCE card_seq
+  MINVALUE 1
+  MAXVALUE 999999999999999999999999999
+  INCREMENT BY 1
+  NOCYCLE
+  NOORDER
+  CACHE 20
+/
+
+CREATE SEQUENCE demo_id_seq
+  MINVALUE 1
+  MAXVALUE 999999999999999999999999999
+  INCREMENT BY 1
+  NOCYCLE
+  NOORDER
+  CACHE 20
+/
+
+CREATE SEQUENCE history_id_seq
+  MINVALUE 1
+  MAXVALUE 999999999999999999999999999
+  INCREMENT BY 1
+  NOCYCLE
+  NOORDER
+  CACHE 20
+/
